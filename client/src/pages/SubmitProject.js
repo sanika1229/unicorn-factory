@@ -9,16 +9,16 @@ function SubmitProject() {
     e.preventDefault();
     try {
       await axios.post("https://unicorn-factory.onrender.com/api/project", {
-
         name,
         description,
       });
+
       alert("Project submitted successfully!");
       setName("");
       setDescription("");
     } catch (err) {
       alert("Submission failed.");
-      console.error(err);
+      console.error("❌ Error submitting project:", err?.response?.data || err.message);
     }
   };
 
