@@ -1,26 +1,29 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Project = require('../models/Project'); // assuming this model exists
+const Project = require("../models/Project");
 
-router.post('/', async (req, res) => {
-  const { name, description } = req.body;
+// Route to create a new project
+router.post("/", async (req, res) => {
   try {
-    const newProject = new Project({ name, description });
-    await newProject.save();
-    res.status(201).json(newProject);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
+    const { name, description } = req.body;
+    const project = new Project({ name, description });
+    await project.save();
+    res.status(201).json({ message: "Project created", project });
+  } catch (error) {
+    console.error("Error saving project:", error);
+    res.status(500).json({ error: "Server error while saving project" });
   }
 });
 
-router.get('/', async (req, res) => {
+// Route to get all projects
+router.get("/all", async (req, res) => {
   try {
     const projects = await Project.find();
     res.json(projects);
   } catch (err) {
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ error: "Failed to fetch projects" });
   }
 });
+
 
 module.exports = router;
