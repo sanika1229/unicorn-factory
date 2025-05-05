@@ -7,7 +7,8 @@ function App() {
   const [contributions, setContributions] = useState({});
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/projects/all")
+    axios.get("https://unicorn-factory.onrender.com/api/projects/all")
+
       .then(res => setProjects(res.data))
       .catch(err => console.error("Error fetching projects:", err));
   }, []);
