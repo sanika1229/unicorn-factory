@@ -16,7 +16,14 @@ mongoose.connect(process.env.MONGO_URI)
   .catch((err) => console.log("❌ DB Connection Error:", err));
 
 // Routes
-app.use('/api/projects', require('./routes/projectRoutes'));
+const cors = require("cors");
+
+app.use(cors({
+  origin: "https://zingy-taffy-3a8bbc.netlify.app", // your Netlify domain
+  methods: ["GET", "POST"],
+  credentials: true
+}));
+
 
 app.listen(5000, () => {
   console.log("🚀 Server running on http://localhost:5000");
