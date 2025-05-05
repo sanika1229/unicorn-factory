@@ -1,27 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const Project = require('../models/Project');
+const Project = require('../models/Project'); // assuming this model exists
 
-router.post('/submit', async (req, res) => {
+router.post('/', async (req, res) => {
+  const { name, description } = req.body;
   try {
-    const project = new Project(req.body);
-    await project.save();
-    res.status(201).json({ message: 'Project submitted successfully!' });
+    const newProject = new Project({ name, description });
+    await newProject.save();
+    res.status(201).json(newProject);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to submit project' });
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-// GET: Fetch all submitted projects
-router.get('/all', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const projects = await Project.find().sort({ createdAt: -1 });
+    const projects = await Project.find();
     res.json(projects);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch projects' });
+    res.status(500).json({ message: "Server error" });
   }
 });
-
 
 module.exports = router;

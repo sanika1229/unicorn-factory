@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors'); // ✅ This was missing
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const projectRoutes = require('./routes/projectRoutes');
+app.use('/api/project', projectRoutes);
 
 dotenv.config();
 
