@@ -1,36 +1,34 @@
 const express = require('express');
-const cors = require('cors');
+const cors = require('cors'); // ✅ This was missing
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
 dotenv.config();
 
-const app = express(); // <- Moved above usage!
+const app = express();
 
-app.use(cors());
+// Middleware
+app.use(cors({
+  origin: "https://zingy-taffy-3a8bbc.netlify.app", // ✅ Your Netlify frontend
+  methods: ["GET", "POST"],
+  credentials: true
+}));
 app.use(express.json());
 
-// Connect MongoDB
+// MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.log("❌ DB Connection Error:", err));
 
 // Routes
-const cors = require("cors");
-
-app.use(cors({
-  origin: "https://zingy-taffy-3a8bbc.netlify.app", // your Netlify domain
-  methods: ["GET", "POST"],
-  credentials: true
-}));
-
-
-app.listen(5000, () => {
-  console.log("🚀 Server running on http://localhost:5000");
-});
-
 app.get("/", (req, res) => {
   res.send("🦄 Unicorn Factory Backend is running!");
 });
 
+// TODO: Add this later once you define the route handler
+// const projectRoutes = require('./routes/projectRoutes');
+// app.use('/api/project', projectRoutes);
 
+app.listen(5000, () => {
+  console.log("🚀 Server running on http://localhost:5000");
+});
