@@ -1,45 +1,60 @@
 // client/src/pages/Setuppage.js
+
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 
 function SetupPage() {
   const { id } = useParams();
-  const [tokenCount, setTokenCount] = useState("");
   const [price, setPrice] = useState("");
+  const [supply, setSupply] = useState("");
 
-  const handleSave = () => {
-    const setupData = JSON.parse(localStorage.getItem("tokenSetup") || "{}");
-    setupData[id] = { tokenCount, price };
-    localStorage.setItem("tokenSetup", JSON.stringify(setupData));
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-    alert("✅ Token setup saved!");
+    const tokenInfo = {
+      projectId: id,
+      price,
+      supply,
+    };
+
+    console.log("🪙 Token setup submitted:", tokenInfo);
+    alert("✅ Token setup saved (just a demo, not stored in DB yet).");
+
+    // reset
+    setPrice("");
+    setSupply("");
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-green-400 to-blue-500 text-white">
-      <h1 className="text-3xl font-bold mb-6">💸 Setup Token Sale</h1>
-      <div className="bg-white text-black p-6 rounded-lg shadow-md w-full max-w-md">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-indigo-500 to-purple-500 text-white">
+      <h2 className="text-3xl font-bold mb-6">🪙 Set Up Your Token</h2>
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded shadow-md text-black w-full max-w-md"
+      >
+        <label className="block mb-2 font-semibold">Token Price (in units):</label>
         <input
           type="number"
-          placeholder="Total Tokens"
-          value={tokenCount}
-          onChange={(e) => setTokenCount(e.target.value)}
-          className="w-full mb-4 p-2 border border-gray-300 rounded"
-        />
-        <input
-          type="number"
-          placeholder="Price per Token"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
-          className="w-full mb-4 p-2 border border-gray-300 rounded"
+          required
+          className="w-full p-2 mb-4 border border-gray-300 rounded"
+        />
+        <label className="block mb-2 font-semibold">Total Token Supply:</label>
+        <input
+          type="number"
+          value={supply}
+          onChange={(e) => setSupply(e.target.value)}
+          required
+          className="w-full p-2 mb-4 border border-gray-300 rounded"
         />
         <button
-          className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 w-full"
-          onClick={handleSave}
+          type="submit"
+          className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-4 py-2 rounded w-full"
         >
-          Save Token Settings
+          Save Token Info
         </button>
-      </div>
+      </form>
     </div>
   );
 }
