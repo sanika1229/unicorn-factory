@@ -8,7 +8,8 @@ function SubmitProject() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/projects/submit", {
+      await axios.post("https://unicorn-factory.onrender.com/api/project", {
+
         name,
         description,
       });
