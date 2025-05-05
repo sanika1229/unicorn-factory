@@ -1,17 +1,16 @@
 const express = require('express');
-const cors = require('cors'); // ✅ This was missing
+const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const projectRoutes = require('./routes/projectRoutes');
-app.use('/api/project', projectRoutes);
 
 dotenv.config();
 
-const app = express();
+const app = express(); // 👈 MUST come before any app.use()
 
 // Middleware
 app.use(cors({
-  origin: "https://zingy-taffy-3a8bbc.netlify.app", // ✅ Your Netlify frontend
+  origin: "https://zingy-taffy-3a8bbc.netlify.app",
   methods: ["GET", "POST"],
   credentials: true
 }));
@@ -26,10 +25,7 @@ mongoose.connect(process.env.MONGO_URI)
 app.get("/", (req, res) => {
   res.send("🦄 Unicorn Factory Backend is running!");
 });
-
-// TODO: Add this later once you define the route handler
-// const projectRoutes = require('./routes/projectRoutes');
-// app.use('/api/project', projectRoutes);
+app.use('/api/project', projectRoutes); // ✅ Now this is safe to call
 
 app.listen(5000, () => {
   console.log("🚀 Server running on http://localhost:5000");
