@@ -1,41 +1,10 @@
-import { Link } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import SetupPage from "./pages/Setuppage";
+import SubmitProject from "./pages/SubmitProject";
 
-
-
-function App() {
-  const [projects, setProjects] = useState([]);
-  const [contributions, setContributions] = useState({});
-
-  useEffect(() => {
-    axios.get("https://unicorn-factory.onrender.com/api/projects/all")
-
-      .then(res => setProjects(res.data))
-      .catch(err => console.error("Error fetching projects:", err));
-  }, []);
-
-  const handleInputChange = (projectId, value) => {
-    setContributions(prev => ({ ...prev, [projectId]: value }));
-  };
-
-  const handleBuy = (project, price) => {
-    const amount = parseFloat(contributions[project._id] || 0);
-    if (!amount || amount <= 0) return alert("Enter a valid amount!");
-
-    const tokensBought = (amount / price).toFixed(2);
-
-    const existing = JSON.parse(localStorage.getItem("myTokens")) || {};
-    existing[project.name] = (parseFloat(existing[project.name]) || 0) + parseFloat(tokensBought);
-    localStorage.setItem("myTokens", JSON.stringify(existing));
-
-    const totalContributions = JSON.parse(localStorage.getItem("contributions")) || {};
-    totalContributions[project.name] = (parseFloat(totalContributions[project.name]) || 0) + amount;
-    localStorage.setItem("contributions", JSON.stringify(totalContributions));
-
-    alert(`✅ You bought ${tokensBought} tokens of ${project.name}`);
-  };
-
+function HomePage({ projects, contributions, handleInputChange, handleBuy }) {
   return (
     <div className="min-h-screen bg-gradient-to-r from-slate-900 to-blue-900 text-white p-6">
       <div className="flex flex-col items-center justify-center py-10">
@@ -54,15 +23,13 @@ function App() {
       <div className="max-w-3xl mx-auto bg-[#161b22] text-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-semibold mb-4">📋 Submitted Startups</h2>
 
-        {/* 🚀 Launch Zone */}
         <h2 className="text-xl font-semibold mb-2 text-yellow-400">🚀 Launch Zone</h2>
         {projects.filter((p) => {
-          const contributions = JSON.parse(localStorage.getItem("contributions")) || {};
-          return contributions[p.name] >= 100000;
+          const localContributions = JSON.parse(localStorage.getItem("contributions")) || {};
+          return localContributions[p.name] >= 100000;
         }).map((p) => (
           <div key={p._id} className="bg-yellow-200 text-black p-3 rounded mb-3 shadow-md">
             <strong>{p.name}</strong> has hit the funding cap and is ready to launch!
-
           </div>
         ))}
 
@@ -111,6 +78,56 @@ function App() {
         )}
       </div>
     </div>
+  );
+}
+
+function App() {
+  const [projects, setProjects] = useState([]);
+  const [contributions, setContributions] = useState({});
+
+  useEffect(() => {
+    axios.get("https://unicorn-factory.onrender.com/api/projects/all")
+      .then(res => setProjects(res.data))
+      .catch(err => console.error("Error fetching projects:", err));
+  }, []);
+
+  const handleInputChange = (projectId, value) => {
+    setContributions(prev => ({ ...prev, [projectId]: value }));
+  };
+
+  const handleBuy = (project, price) => {
+    const amount = parseFloat(contributions[project._id] || 0);
+    if (!amount || amount <= 0) return alert("Enter a valid amount!");
+
+    const tokensBought = (amount / price).toFixed(2);
+
+    const existing = JSON.parse(localStorage.getItem("myTokens")) || {};
+    existing[project.name] = (parseFloat(existing[project.name]) || 0) + parseFloat(tokensBought);
+    localStorage.setItem("myTokens", JSON.stringify(existing));
+
+    const totalContributions = JSON.parse(localStorage.getItem("contributions")) || {};
+    totalContributions[project.name] = (parseFloat(totalContributions[project.name]) || 0) + amount;
+    localStorage.setItem("contributions", JSON.stringify(totalContributions));
+
+    alert(`✅ You bought ${tokensBought} tokens of ${project.name}`);
+  };
+
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <HomePage
+            projects={projects}
+            contributions={contributions}
+            handleInputChange={handleInputChange}
+            handleBuy={handleBuy}
+          />
+        }
+      />
+      <Route path="/submit" element={<SubmitProject />} />
+      <Route path="/setup/:id" element={<SetupPage />} />
+    </Routes>
   );
 }
 
