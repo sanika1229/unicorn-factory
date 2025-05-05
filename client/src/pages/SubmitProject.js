@@ -1,19 +1,24 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function SubmitProject() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://unicorn-factory.onrender.com/api/project", {
+      const res = await axios.post("https://unicorn-factory.onrender.com/api/project", {
         name,
         description,
       });
 
       alert("Project submitted successfully!");
+      const projectId = res.data._id || res.data.id;
+      navigate(`/setup/${projectId}`); // 👈 Redirect to token setup
+
       setName("");
       setDescription("");
     } catch (err) {

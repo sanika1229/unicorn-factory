@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+
+
 function App() {
   const [projects, setProjects] = useState([]);
   const [contributions, setContributions] = useState({});

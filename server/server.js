@@ -25,7 +25,7 @@ mongoose.connect(process.env.MONGO_URI)
 app.get("/", (req, res) => {
   res.send("🦄 Unicorn Factory Backend is running!");
 });
-app.use('/api/project', projectRoutes); // ✅ Now this is safe to call
+app.use('/api/projects', projectRoutes);
 
 app.listen(5000, () => {
   console.log("🚀 Server running on http://localhost:5000");
